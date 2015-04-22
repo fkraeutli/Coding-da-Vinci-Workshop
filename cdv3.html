@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+	
+	<head>
+		
+		<meta charset="utf-8">
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		
+		<style>
+			
+						
+		</style>
+		
+	</head>
+	
+	<body>
+		
+		<script type="text/javascript">
+			
+			var dataset;
+			
+			d3.csv( "http://projects.kraeutli.com/cdv/data.php", function( data ) {
+				
+				dataset = data;
+				
+				make();
+				
+			} );
+			
+			function make() {
+				
+				var svg = d3.select( "body" ).append( "svg" )
+					.attr( "width", 800 )
+					.attr( "height", 600 );
+					
+				var works = svg.append( "g" )
+					.attr( "id", "works" );
+				
+				works.selectAll( "g.work" ).data( dataset )
+					.enter()
+				.append( "g" )
+					.attr( "class", "work" )
+				.append( "circle" )
+					.attr( "r", 5 );
+				
+			}
+			
+		</script>
+		
+	</body>
+	
+</html>

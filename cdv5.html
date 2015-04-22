@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+	
+	<head>
+		
+		<meta charset="utf-8">
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		
+		<style>
+			
+			circle {
+				
+				opacity: .2;
+				
+			}	
+						
+		</style>
+		
+	</head>
+	
+	<body>
+		
+		<script type="text/javascript">
+			
+			var dataset,
+				yearScale = d3.scale.linear()
+					.domain( [ 1900, 1980 ] )
+					.range( [ 0, 800 ] );
+			
+			d3.csv( "http://projects.kraeutli.com/cdv/data.php", function( data ) {
+				
+				dataset = data;
+				
+				for( var i = 0; i < dataset.length; i++ ) {
+					
+					dataset[ i ].year_composed = +dataset[ i ].year_composed;
+					dataset[ i ].year_composed_to = +dataset[ i ].year_composed_to;
+					dataset[ i ].year_poet_born = +dataset[ i ].year_poet_born;
+					dataset[ i ].year_poet_died = +dataset[ i ].year_poet_died;
+					
+				}
+				
+				make();
+				
+			} );
+			
+			function make() {
+				
+				var svg = d3.select( "body" ).append( "svg" )
+					.attr( "width", 800 )
+					.attr( "height", 600 );
+					
+				var works = svg.append( "g" )
+					.attr( "id", "works" )
+					.attr( "transform", "translate( 0, 100 )" );
+				
+				worksData = d3.nest()
+					.key( function( d ) {
+					
+						return d.cycle_id;
+						
+					} )
+					.entries( dataset );
+				
+				works.selectAll( "g.work" ).data( worksData )
+					.enter()
+				.append( "g" )
+					.attr( "class", "work" )
+					.attr( "transform", function( d ) { 
+						
+						var x = yearScale( d3.mean( d.values, function( v ) { return v.year_composed; } ) );
+						
+						return "translate( " + x + ", 0 )";
+						
+					} )
+				.append( "circle" )
+					.attr( "r", 5 );
+				
+			}
+			
+		</script>
+		
+	</body>
+	
+</html>
